@@ -1,40 +1,40 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ja">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>마크다운 메모장</title>
+  <title>マークダウンメモ帳</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <form id="login" class="login" hidden>
-    <h1>마크다운 메모장</h1>
-    <input id="login-password" type="password" placeholder="비밀번호" aria-label="비밀번호" autocomplete="current-password" required>
-    <button type="submit">접속</button>
+    <h1>マークダウンメモ帳</h1>
+    <input id="login-password" type="password" placeholder="パスワード" aria-label="パスワード" autocomplete="current-password" required>
+    <button type="submit">ログイン</button>
     <p id="login-error" class="error" role="alert"></p>
   </form>
 
   <main id="app" class="app" hidden>
     <header class="topbar">
       <div id="tabs" class="tabs" role="tablist">
-        <button id="add-tab" class="add-tab" type="button" aria-label="새 메모" title="새 메모">+</button>
+        <button id="add-tab" class="add-tab" type="button" aria-label="新しいメモ" title="新しいメモ">+</button>
       </div>
       <div class="menu">
-        <button id="open-password" type="button">비밀번호 변경</button>
-        <button id="logout" type="button">로그아웃</button>
+        <button id="open-password" type="button">パスワード変更</button>
+        <button id="logout" type="button">ログアウト</button>
       </div>
     </header>
 
     <section id="note" class="note" hidden>
       <div class="toolbar">
         <span id="status" class="status" role="status"></span>
-        <button id="save" class="primary" type="button" title="Ctrl+S">저장</button>
-        <button id="edit" class="primary" type="button">수정</button>
-        <button id="delete" class="danger" type="button">삭제</button>
+        <button id="save" class="primary" type="button" title="Ctrl+S">保存</button>
+        <button id="edit" class="primary" type="button">編集</button>
+        <button id="delete" class="danger" type="button">削除</button>
       </div>
       <div id="editor" class="editor">
-        <textarea id="source" aria-label="마크다운 입력" placeholder="마크다운을 입력하세요" spellcheck="false"></textarea>
-        <div id="divider" class="divider" role="separator" aria-orientation="vertical" aria-label="영역 크기 조절" tabindex="0"></div>
+        <textarea id="source" aria-label="マークダウン入力" placeholder="マークダウンを入力してください" spellcheck="false"></textarea>
+        <div id="divider" class="divider" role="separator" aria-orientation="vertical" aria-label="領域サイズの調整" tabindex="0"></div>
         <article id="preview" class="markdown"></article>
       </div>
       <article id="viewer" class="markdown viewer"></article>
@@ -43,20 +43,20 @@
 
   <dialog id="password-dialog">
     <form id="password-form">
-      <h2>비밀번호 변경</h2>
-      <label>현재 비밀번호
+      <h2>パスワード変更</h2>
+      <label>現在のパスワード
         <input id="current-password" type="password" autocomplete="current-password" required>
       </label>
-      <label>새 비밀번호 (4자 이상)
+      <label>新しいパスワード（4文字以上）
         <input id="new-password" type="password" minlength="4" autocomplete="new-password" required>
       </label>
-      <label>새 비밀번호 확인
+      <label>新しいパスワード（確認）
         <input id="confirm-password" type="password" minlength="4" autocomplete="new-password" required>
       </label>
       <p id="password-error" class="error" role="alert"></p>
       <div class="dialog-actions">
-        <button id="password-cancel" type="button">취소</button>
-        <button class="primary" type="submit">변경</button>
+        <button id="password-cancel" type="button">キャンセル</button>
+        <button class="primary" type="submit">変更</button>
       </div>
     </form>
   </dialog>

@@ -25,8 +25,8 @@ function isDirty(tab) {
 
 function tabTitle(content) {
   const line = content.split('\n').map((text) => text.trim()).find(Boolean);
-  if (!line) return '새 메모';
-  return line.replace(/^(#{1,6}\s+|>\s*|[-*+]\s+|\d+\.\s+)+/, '').replace(/[*_`~]/g, '').trim() || '새 메모';
+  if (!line) return '新しいメモ';
+  return line.replace(/^(#{1,6}\s+|>\s*|[-*+]\s+|\d+\.\s+)+/, '').replace(/[*_`~]/g, '').trim() || '新しいメモ';
 }
 
 function setStatus(message = '', isError = false) {
@@ -34,7 +34,7 @@ function setStatus(message = '', isError = false) {
   $('status').classList.toggle('is-error', isError);
 }
 
-/* 화면 */
+/* 画面 */
 function renderTabs() {
   document.querySelectorAll('.tab').forEach((el) => el.remove());
   for (const tab of tabs) {
@@ -116,13 +116,13 @@ async function saveTab() {
   const tab = activeTab();
   if (!tab || tab.mode !== 'edit' || saving) return;
   if (!tab.content.trim()) {
-    setStatus('내용이 비어 있어 저장하지 않았습니다.', true);
+    setStatus('内容が空のため保存しませんでした。', true);
     return;
   }
 
   saving = true;
   $('save').disabled = true;
-  setStatus('저장 중...');
+  setStatus('保存中...');
   const content = tab.content;
   const query = tab.noteId
     ? db.from('notes').update({ content, updated_at: new Date().toISOString() }).eq('id', tab.noteId)
@@ -132,14 +132,14 @@ async function saveTab() {
   $('save').disabled = false;
 
   if (error || !data) {
-    setStatus(`저장하지 못했습니다: ${error ? error.message : '메모를 찾을 수 없습니다.'}`, true);
+    setStatus(`保存できませんでした: ${error ? error.message : 'メモが見つかりません。'}`, true);
     return;
   }
 
   tab.noteId = data.id;
   tab.saved = content;
   if (tab.content === content) tab.mode = 'view';
-  if (tab.key === activeKey) setStatus('저장했습니다.');
+  if (tab.key === activeKey) setStatus('保存しました。');
   render();
 }
 
@@ -148,12 +148,12 @@ async function deleteTab() {
   if (!tab) return;
 
   const untouched = !tab.noteId && !tab.content.trim();
-  if (!untouched && !confirm(`"${tabTitle(tab.content)}" 메모를 삭제할까요?`)) return;
+  if (!untouched && !confirm(`「${tabTitle(tab.content)}」を削除しますか？`)) return;
 
   if (tab.noteId) {
     const { error } = await db.from('notes').delete().eq('id', tab.noteId);
     if (error) {
-      setStatus(`삭제하지 못했습니다: ${error.message}`, true);
+      setStatus(`削除できませんでした: ${error.message}`, true);
       return;
     }
   }
@@ -166,7 +166,7 @@ async function deleteTab() {
   render();
 }
 
-/* 인증 */
+/* 認証 */
 function signIn(password) {
   return db.auth.signInWithPassword({ email: ownerEmail, password: passwordPrefix + password });
 }
@@ -189,7 +189,7 @@ async function showApp() {
     $('note').hidden = false;
     $('editor').hidden = true;
     $('viewer').hidden = true;
-    setStatus(`메모를 불러오지 못했습니다: ${error.message}`, true);
+    setStatus(`メモを読み込めませんでした: ${error.message}`, true);
   }
 }
 
@@ -198,14 +198,14 @@ $('login').addEventListener('submit', async (event) => {
   $('login-error').textContent = '';
   const { error } = await signIn($('login-password').value);
   if (error) {
-    $('login-error').textContent = error.status === 400 ? '비밀번호가 틀렸습니다.' : `접속하지 못했습니다: ${error.message}`;
+    $('login-error').textContent = error.status === 400 ? 'パスワードが違います。' : `ログインできませんでした: ${error.message}`;
     return;
   }
   await showApp();
 });
 
 $('logout').addEventListener('click', async () => {
-  if (tabs.some(isDirty) && !confirm('저장하지 않은 내용이 사라집니다. 로그아웃할까요?')) return;
+  if (tabs.some(isDirty) && !confirm('保存していない内容は失われます。ログアウトしますか？')) return;
   await db.auth.signOut();
   showLogin();
 });
@@ -222,26 +222,26 @@ $('password-form').addEventListener('submit', async (event) => {
   event.preventDefault();
   const next = $('new-password').value;
   if (next !== $('confirm-password').value) {
-    $('password-error').textContent = '새 비밀번호가 서로 다릅니다.';
+    $('password-error').textContent = '新しいパスワードが一致しません。';
     return;
   }
 
   const verified = await signIn($('current-password').value);
   if (verified.error) {
-    $('password-error').textContent = '현재 비밀번호가 틀렸습니다.';
+    $('password-error').textContent = '現在のパスワードが違います。';
     return;
   }
 
   const { error } = await db.auth.updateUser({ password: passwordPrefix + next });
   if (error) {
-    $('password-error').textContent = `변경하지 못했습니다: ${error.message}`;
+    $('password-error').textContent = `変更できませんでした: ${error.message}`;
     return;
   }
   $('password-dialog').close();
-  setStatus('비밀번호를 변경했습니다.');
+  setStatus('パスワードを変更しました。');
 });
 
-/* 에디터 */
+/* エディタ */
 $('add-tab').addEventListener('click', addTab);
 $('save').addEventListener('click', saveTab);
 $('delete').addEventListener('click', deleteTab);
@@ -273,7 +273,7 @@ window.addEventListener('beforeunload', (event) => {
   if (tabs.some(isDirty)) event.preventDefault();
 });
 
-/* 기준선 */
+/* 分割線 */
 function setSplit(percent, remember = true) {
   const value = Math.min(85, Math.max(15, percent));
   document.documentElement.style.setProperty('--split', `${value}%`);
@@ -309,7 +309,7 @@ $('divider').addEventListener('keydown', (event) => {
   if (event.key === 'ArrowRight') setSplit(currentSplit() + 2);
 });
 
-/* 시작 */
+/* 起動 */
 async function start() {
   try {
     const saved = parseFloat(localStorage.getItem(SPLIT_KEY));

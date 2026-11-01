@@ -1,11 +1,11 @@
-# 마크다운 메모장
+# マークダウンメモ帳
 
-## 로컬 실행
+## ローカル実行
 
 ```
 python -m http.server 8000
 ```
 
-http://localhost:8000 을 엽니다.
+http://localhost:8000 を開きます。
 
 
