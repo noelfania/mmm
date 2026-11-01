@@ -1,0 +1,177 @@
+:root {
+  --bg: #ffffff;
+  --panel: #f4f4f5;
+  --text: #1f2328;
+  --muted: #656d76;
+  --line: #d0d7de;
+  --accent: #1f6feb;
+  --danger: #c62828;
+  --split: 50%;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17191c;
+    --panel: #22252a;
+    --text: #e6e8eb;
+    --muted: #9aa2ac;
+    --line: #3a3f46;
+    --accent: #58a6ff;
+    --danger: #ff7b72;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body { height: 100%; margin: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.6 system-ui, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+}
+
+button {
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+button:hover { background: var(--panel); }
+button:disabled { opacity: .6; cursor: default; }
+button.primary { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+button.danger { border-color: var(--danger); color: var(--danger); }
+
+input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.error { min-height: 1.6em; margin: 0; color: var(--danger); font-size: 14px; }
+
+/* 로그인 */
+.login {
+  display: grid;
+  gap: 10px;
+  width: min(320px, 100% - 32px);
+  margin: 18vh auto 0;
+}
+.login h1 { margin: 0 0 8px; font-size: 22px; text-align: center; }
+
+/* 앱 */
+.app { display: flex; flex-direction: column; height: 100%; padding: 12px 16px; }
+
+.topbar { display: flex; align-items: flex-start; gap: 12px; }
+
+.tabs { display: flex; flex: 1; flex-wrap: wrap; align-items: center; gap: 2px; min-width: 0; }
+
+.tab {
+  max-width: 160px;
+  padding: 4px 12px;
+  border-radius: 6px 6px 0 0;
+  background: var(--panel);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tab[aria-selected="true"] { border-color: var(--text); background: var(--bg); font-weight: 700; }
+.tab.dirty::before { content: "● "; color: var(--accent); }
+
+.add-tab { padding: 2px 10px; border-color: transparent; background: none; font-size: 20px; font-weight: 700; line-height: 1.4; }
+
+.menu { display: flex; flex-shrink: 0; gap: 4px; }
+.menu button { padding: 2px 8px; color: var(--muted); font-size: 13px; }
+
+.note {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  margin-top: -1px;
+  border: 1px solid var(--line);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+}
+.status { flex: 1; min-width: 0; color: var(--muted); font-size: 13px; }
+.status.is-error { color: var(--danger); }
+
+.editor {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, var(--split)) 7px minmax(0, 1fr);
+  min-height: 0;
+}
+
+#source {
+  width: 100%;
+  height: 100%;
+  padding: 14px;
+  border: 0;
+  outline: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.6 ui-monospace, Consolas, "D2Coding", monospace;
+  resize: none;
+}
+
+.divider {
+  border-inline: 3px solid var(--bg);
+  background: var(--text);
+  cursor: col-resize;
+  touch-action: none;
+}
+.divider:hover, .divider:focus-visible, .divider.dragging { background: var(--accent); outline: 0; }
+.editor.dragging { user-select: none; }
+
+.markdown { min-width: 0; padding: 14px; overflow: auto; overflow-wrap: anywhere; }
+.viewer { flex: 1; }
+
+.markdown > :first-child { margin-top: 0; }
+.markdown img { max-width: 100%; }
+.markdown pre { padding: 12px; border-radius: 6px; background: var(--panel); overflow-x: auto; }
+.markdown code { font-family: ui-monospace, Consolas, "D2Coding", monospace; font-size: .92em; }
+.markdown blockquote { margin-inline: 0; padding-left: 12px; border-left: 3px solid var(--line); color: var(--muted); }
+.markdown table { border-collapse: collapse; }
+.markdown th, .markdown td { padding: 4px 10px; border: 1px solid var(--line); }
+.markdown a { color: var(--accent); }
+
+/* 비밀번호 변경 */
+dialog {
+  width: min(360px, 100% - 32px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+}
+dialog::backdrop { background: rgb(0 0 0 / .4); }
+#password-form { display: grid; gap: 10px; }
+#password-form h2 { margin: 0; font-size: 18px; }
+#password-form label { display: grid; gap: 4px; font-size: 14px; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 6px; }
+
+@media (max-width: 640px) {
+  .topbar { flex-direction: column-reverse; gap: 6px; }
+  .tabs { width: 100%; flex: none; }
+  .menu { align-self: flex-end; }
+  .editor { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+  .divider { display: none; }
+  .markdown:not(.viewer) { border-top: 1px solid var(--line); }
+}

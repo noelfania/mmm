@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>마크다운 메모장</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <form id="login" class="login" hidden>
+    <h1>마크다운 메모장</h1>
+    <input id="login-password" type="password" placeholder="비밀번호" aria-label="비밀번호" autocomplete="current-password" required>
+    <button type="submit">접속</button>
+    <p id="login-error" class="error" role="alert"></p>
+  </form>
+
+  <main id="app" class="app" hidden>
+    <header class="topbar">
+      <div id="tabs" class="tabs" role="tablist">
+        <button id="add-tab" class="add-tab" type="button" aria-label="새 메모" title="새 메모">+</button>
+      </div>
+      <div class="menu">
+        <button id="open-password" type="button">비밀번호 변경</button>
+        <button id="logout" type="button">로그아웃</button>
+      </div>
+    </header>
+
+    <section id="note" class="note" hidden>
+      <div class="toolbar">
+        <span id="status" class="status" role="status"></span>
+        <button id="save" class="primary" type="button" title="Ctrl+S">저장</button>
+        <button id="edit" class="primary" type="button">수정</button>
+        <button id="delete" class="danger" type="button">삭제</button>
+      </div>
+      <div id="editor" class="editor">
+        <textarea id="source" aria-label="마크다운 입력" placeholder="마크다운을 입력하세요" spellcheck="false"></textarea>
+        <div id="divider" class="divider" role="separator" aria-orientation="vertical" aria-label="영역 크기 조절" tabindex="0"></div>
+        <article id="preview" class="markdown"></article>
+      </div>
+      <article id="viewer" class="markdown viewer"></article>
+    </section>
+  </main>
+
+  <dialog id="password-dialog">
+    <form id="password-form">
+      <h2>비밀번호 변경</h2>
+      <label>현재 비밀번호
+        <input id="current-password" type="password" autocomplete="current-password" required>
+      </label>
+      <label>새 비밀번호 (4자 이상)
+        <input id="new-password" type="password" minlength="4" autocomplete="new-password" required>
+      </label>
+      <label>새 비밀번호 확인
+        <input id="confirm-password" type="password" minlength="4" autocomplete="new-password" required>
+      </label>
+      <p id="password-error" class="error" role="alert"></p>
+      <div class="dialog-actions">
+        <button id="password-cancel" type="button">취소</button>
+        <button class="primary" type="submit">변경</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
