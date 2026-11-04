@@ -96,7 +96,7 @@ function renderKaraoke() {
     links.replaceChildren();
     for (const line of karaokeContent.split(/\r?\n/).map((text) => text.trim()).filter(Boolean)) {
       const link = document.createElement('a');
-      link.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(line)}`;
+      link.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(`노래방 ${line}`)}`;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       link.textContent = line;
