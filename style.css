@@ -120,16 +120,16 @@ input {
 }
 
 .karaoke-links {
-  display: flex;
+  display: grid;
   flex: 1;
-  flex-direction: column;
-  align-items: flex-start;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: start;
   gap: 8px;
   min-height: 0;
   padding: 14px;
   overflow: auto;
 }
-.karaoke-links a { color: #e62117; }
+.karaoke-links a { color: #e62117; overflow-wrap: anywhere; }
 
 .footer { padding-top: 8px; text-align: right; font-size: 13px; }
 .footer a { color: var(--muted); }
