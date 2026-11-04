@@ -3,9 +3,15 @@ const db = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 const $ = (id) => document.getElementById(id);
 const SPLIT_KEY = 'memo.split';
+// Keep the karaoke list in the existing notes table without showing it as a regular note.
+const KARAOKE_PREFIX = '<!-- mmm:karaoke -->\n';
 
 let tabs = []; // { key, noteId, content, saved, mode: 'edit' | 'view' }
 let activeKey = null;
+let karaokeActive = false;
+let karaokeNoteId = null;
+let karaokeContent = '';
+let karaokeSaved = '';
 let nextKey = 1;
 let saving = false;
 
@@ -36,12 +42,12 @@ function setStatus(message = '', isError = false) {
 
 /* 画面 */
 function renderTabs() {
-  document.querySelectorAll('.tab').forEach((el) => el.remove());
+  document.querySelectorAll('.note-tab').forEach((el) => el.remove());
   for (const tab of tabs) {
     const button = document.createElement('button');
     const title = tabTitle(tab.content);
     button.type = 'button';
-    button.className = 'tab';
+    button.className = 'tab note-tab';
     button.classList.toggle('dirty', isDirty(tab));
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-selected', String(tab.key === activeKey));
@@ -50,11 +56,13 @@ function renderTabs() {
     button.addEventListener('click', () => selectTab(tab.key));
     $('tabs').insertBefore(button, $('add-tab'));
   }
+  $('karaoke-tab').setAttribute('aria-selected', String(karaokeActive));
+  $('karaoke-tab').classList.toggle('dirty', karaokeContent !== karaokeSaved);
 }
 
 function renderNote() {
   const tab = activeTab();
-  $('note').hidden = !tab;
+  $('note').hidden = karaokeActive || !tab;
   if (!tab) return;
 
   const editing = tab.mode === 'edit';
@@ -72,14 +80,48 @@ function renderNote() {
   }
 }
 
+function renderKaraoke() {
+  $('karaoke').hidden = !karaokeActive;
+  if (!karaokeActive) return;
+
+  const editing = $('karaoke-source').dataset.editing === 'true';
+  $('karaoke-source').hidden = !editing;
+  $('karaoke-links').hidden = editing;
+  $('karaoke-save').hidden = !editing;
+  $('karaoke-edit').hidden = editing;
+  if ($('karaoke-source').value !== karaokeContent) $('karaoke-source').value = karaokeContent;
+
+  if (!editing) {
+    const links = $('karaoke-links');
+    links.replaceChildren();
+    for (const line of karaokeContent.split(/\r?\n/).map((text) => text.trim()).filter(Boolean)) {
+      const link = document.createElement('a');
+      link.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(line)}`;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = line;
+      links.append(link);
+    }
+  }
+}
+
 function render() {
   renderTabs();
   renderNote();
+  renderKaraoke();
 }
 
 function selectTab(key) {
+  karaokeActive = false;
   activeKey = key;
   setStatus();
+  render();
+}
+
+function selectKaraoke() {
+  karaokeActive = true;
+  activeKey = null;
+  setKaraokeStatus();
   render();
 }
 
@@ -101,7 +143,13 @@ async function loadNotes() {
     .select('id, content')
     .order('created_at', { ascending: true });
   if (error) throw error;
-  tabs = data.map((note) => ({
+  const karaokeNote = data.find((note) => note.content.startsWith(KARAOKE_PREFIX));
+  karaokeNoteId = karaokeNote ? karaokeNote.id : null;
+  karaokeContent = karaokeNote ? karaokeNote.content.slice(KARAOKE_PREFIX.length) : '';
+  karaokeSaved = karaokeContent;
+  karaokeActive = false;
+  $('karaoke-source').dataset.editing = 'false';
+  tabs = data.filter((note) => !note.content.startsWith(KARAOKE_PREFIX)).map((note) => ({
     key: nextKey++,
     noteId: note.id,
     content: note.content,
@@ -109,6 +157,37 @@ async function loadNotes() {
     mode: 'view',
   }));
   activeKey = tabs.length ? tabs[tabs.length - 1].key : null;
+  render();
+}
+
+function setKaraokeStatus(message = '', isError = false) {
+  $('karaoke-status').textContent = message;
+  $('karaoke-status').classList.toggle('is-error', isError);
+}
+
+async function saveKaraoke() {
+  if (!karaokeActive || saving) return;
+
+  saving = true;
+  $('karaoke-save').disabled = true;
+  setKaraokeStatus('保存中...');
+  const content = KARAOKE_PREFIX + karaokeContent;
+  const query = karaokeNoteId
+    ? db.from('notes').update({ content, updated_at: new Date().toISOString() }).eq('id', karaokeNoteId)
+    : db.from('notes').insert({ content });
+  const { data, error } = await query.select('id').maybeSingle();
+  saving = false;
+  $('karaoke-save').disabled = false;
+
+  if (error || !data) {
+    setKaraokeStatus(`保存できませんでした: ${error ? error.message : 'メモが見つかりません。'}`, true);
+    return;
+  }
+
+  karaokeNoteId = data.id;
+  karaokeSaved = karaokeContent;
+  $('karaoke-source').dataset.editing = 'false';
+  setKaraokeStatus('保存しました。');
   render();
 }
 
@@ -205,7 +284,7 @@ $('login').addEventListener('submit', async (event) => {
 });
 
 $('logout').addEventListener('click', async () => {
-  if (tabs.some(isDirty) && !confirm('保存していない内容は失われます。ログアウトしますか？')) return;
+  if ((tabs.some(isDirty) || karaokeContent !== karaokeSaved) && !confirm('保存していない内容は失われます。ログアウトしますか？')) return;
   await db.auth.signOut();
   showLogin();
 });
@@ -243,8 +322,16 @@ $('password-form').addEventListener('submit', async (event) => {
 
 /* エディタ */
 $('add-tab').addEventListener('click', addTab);
+$('karaoke-tab').addEventListener('click', selectKaraoke);
 $('save').addEventListener('click', saveTab);
 $('delete').addEventListener('click', deleteTab);
+$('karaoke-save').addEventListener('click', saveKaraoke);
+$('karaoke-edit').addEventListener('click', () => {
+  $('karaoke-source').dataset.editing = 'true';
+  setKaraokeStatus();
+  renderKaraoke();
+  $('karaoke-source').focus();
+});
 
 $('edit').addEventListener('click', () => {
   const tab = activeTab();
@@ -262,15 +349,21 @@ $('source').addEventListener('input', () => {
   renderTabs();
 });
 
+$('karaoke-source').addEventListener('input', () => {
+  karaokeContent = $('karaoke-source').value;
+  renderTabs();
+});
+
 document.addEventListener('keydown', (event) => {
   if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
     event.preventDefault();
-    saveTab();
+    if (karaokeActive) saveKaraoke();
+    else saveTab();
   }
 });
 
 window.addEventListener('beforeunload', (event) => {
-  if (tabs.some(isDirty)) event.preventDefault();
+  if (tabs.some(isDirty) || karaokeContent !== karaokeSaved) event.preventDefault();
 });
 
 /* 分割線 */

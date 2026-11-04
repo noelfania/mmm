@@ -17,6 +17,7 @@
   <main id="app" class="app" hidden>
     <header class="topbar">
       <div id="tabs" class="tabs" role="tablist">
+        <button id="karaoke-tab" class="tab karaoke-tab" type="button" role="tab" aria-selected="false">노래방</button>
         <button id="add-tab" class="add-tab" type="button" aria-label="新しいメモ" title="新しいメモ">+</button>
       </div>
       <div class="menu">
@@ -24,6 +25,16 @@
         <button id="logout" type="button">ログアウト</button>
       </div>
     </header>
+
+    <section id="karaoke" class="note karaoke" hidden>
+      <div class="toolbar">
+        <span id="karaoke-status" class="status" role="status"></span>
+        <button id="karaoke-save" class="primary" type="button" title="Ctrl+S">保存</button>
+        <button id="karaoke-edit" class="primary" type="button">編集</button>
+      </div>
+      <textarea id="karaoke-source" aria-label="歌の検索リスト" placeholder="歌手名と曲名を1行ずつ入力してください" spellcheck="false"></textarea>
+      <div id="karaoke-links" class="karaoke-links" hidden></div>
+    </section>
 
     <section id="note" class="note" hidden>
       <div class="toolbar">
@@ -39,6 +50,7 @@
       </div>
       <article id="viewer" class="markdown viewer"></article>
     </section>
+    <footer class="footer"><a href="https://github.com/noelfania/mmm" target="_blank" rel="noopener noreferrer">View on GitHub</a></footer>
   </main>
 
   <dialog id="password-dialog">
