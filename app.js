@@ -63,13 +63,14 @@ function renderTabs() {
 function renderNote() {
   const tab = activeTab();
   $('note').hidden = karaokeActive || !tab;
+  const editing = tab?.mode === 'edit';
+  $('save').hidden = !tab || !editing;
+  $('edit').hidden = !tab || editing;
+  $('delete').hidden = !tab;
   if (!tab) return;
 
-  const editing = tab.mode === 'edit';
   $('editor').hidden = !editing;
   $('viewer').hidden = editing;
-  $('save').hidden = !editing;
-  $('edit').hidden = editing;
 
   if (editing) {
     if ($('source').value !== tab.content) $('source').value = tab.content;
@@ -82,13 +83,13 @@ function renderNote() {
 
 function renderKaraoke() {
   $('karaoke').hidden = !karaokeActive;
+  const editing = karaokeActive && $('karaoke-source').dataset.editing === 'true';
+  $('karaoke-save').hidden = !editing;
+  $('karaoke-edit').hidden = !karaokeActive || editing;
   if (!karaokeActive) return;
 
-  const editing = $('karaoke-source').dataset.editing === 'true';
   $('karaoke-source').hidden = !editing;
   $('karaoke-links').hidden = editing;
-  $('karaoke-save').hidden = !editing;
-  $('karaoke-edit').hidden = editing;
   if ($('karaoke-source').value !== karaokeContent) $('karaoke-source').value = karaokeContent;
 
   if (!editing) {

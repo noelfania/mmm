@@ -94,8 +94,7 @@ input {
 
 .add-tab { padding: 2px 10px; border-color: transparent; background: none; font-size: 20px; font-weight: 700; line-height: 1.4; }
 
-.menu { display: flex; flex-shrink: 0; gap: 4px; }
-.menu button { padding: 2px 8px; color: var(--muted); font-size: 13px; }
+.menu { display: flex; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; gap: 4px; }
 
 .note {
   display: flex;
@@ -130,14 +129,17 @@ input {
 }
 .karaoke-links a {
   display: block;
+  width: 50%;
   margin-bottom: 8px;
   color: #e62117;
   overflow-wrap: anywhere;
   break-inside: avoid;
 }
 
-.footer { padding-top: 8px; text-align: right; font-size: 13px; }
+.footer { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding-top: 8px; font-size: 13px; }
 .footer a { color: var(--muted); }
+.account-menu { display: flex; gap: 4px; }
+.account-menu button { padding: 2px 8px; color: var(--muted); font-size: 13px; }
 
 .toolbar {
   display: flex;

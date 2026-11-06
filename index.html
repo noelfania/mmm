@@ -21,16 +21,17 @@
         <button id="add-tab" class="add-tab" type="button" aria-label="新しいメモ" title="新しいメモ">+</button>
       </div>
       <div class="menu">
-        <button id="open-password" type="button">パスワード変更</button>
-        <button id="logout" type="button">ログアウト</button>
+        <button id="save" class="primary" type="button" title="Ctrl+S" hidden>保存</button>
+        <button id="edit" class="primary" type="button" hidden>編集</button>
+        <button id="delete" class="danger" type="button" hidden>削除</button>
+        <button id="karaoke-save" class="primary" type="button" title="Ctrl+S" hidden>保存</button>
+        <button id="karaoke-edit" class="primary" type="button" hidden>編集</button>
       </div>
     </header>
 
     <section id="karaoke" class="note karaoke" hidden>
       <div class="toolbar">
         <span id="karaoke-status" class="status" role="status"></span>
-        <button id="karaoke-save" class="primary" type="button" title="Ctrl+S">保存</button>
-        <button id="karaoke-edit" class="primary" type="button">編集</button>
       </div>
       <textarea id="karaoke-source" aria-label="歌の検索リスト" placeholder="歌手名と曲名を1行ずつ入力してください" spellcheck="false"></textarea>
       <div id="karaoke-links" class="karaoke-links" hidden></div>
@@ -39,9 +40,6 @@
     <section id="note" class="note" hidden>
       <div class="toolbar">
         <span id="status" class="status" role="status"></span>
-        <button id="save" class="primary" type="button" title="Ctrl+S">保存</button>
-        <button id="edit" class="primary" type="button">編集</button>
-        <button id="delete" class="danger" type="button">削除</button>
       </div>
       <div id="editor" class="editor">
         <textarea id="source" aria-label="マークダウン入力" placeholder="マークダウンを入力してください" spellcheck="false"></textarea>
@@ -50,7 +48,13 @@
       </div>
       <article id="viewer" class="markdown viewer"></article>
     </section>
-    <footer class="footer"><a href="https://github.com/noelfania/mmm" target="_blank" rel="noopener noreferrer">View on GitHub</a></footer>
+    <footer class="footer">
+      <a href="https://github.com/noelfania/mmm" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+      <div class="account-menu">
+        <button id="open-password" type="button">パスワード変更</button>
+        <button id="logout" type="button">ログアウト</button>
+      </div>
+    </footer>
   </main>
 
   <dialog id="password-dialog">
