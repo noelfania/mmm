@@ -7,6 +7,32 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="loading" class="loading" role="status" aria-label="読み込み中">
+    <span class="visually-hidden">読み込み中...</span>
+    <div class="loading-header" aria-hidden="true">
+      <div class="loading-tabs">
+        <i class="skeleton skeleton-tab"></i>
+        <i class="skeleton skeleton-tab"></i>
+        <i class="skeleton skeleton-tab"></i>
+      </div>
+      <div class="loading-actions">
+        <i class="skeleton skeleton-button"></i>
+        <i class="skeleton skeleton-button"></i>
+      </div>
+    </div>
+    <div class="loading-panel" aria-hidden="true">
+      <div class="loading-toolbar"><i class="skeleton skeleton-status"></i><i class="skeleton skeleton-button"></i></div>
+      <div class="loading-content">
+        <i class="skeleton skeleton-line skeleton-line-wide"></i>
+        <i class="skeleton skeleton-line"></i>
+        <i class="skeleton skeleton-line skeleton-line-medium"></i>
+        <i class="skeleton skeleton-line"></i>
+        <i class="skeleton skeleton-line skeleton-line-short"></i>
+      </div>
+    </div>
+    <div class="loading-footer" aria-hidden="true"><i class="skeleton skeleton-button"></i></div>
+  </div>
+
   <form id="login" class="login" hidden>
     <h1>マークダウンメモ帳</h1>
     <input id="login-password" type="password" placeholder="パスワード" aria-label="パスワード" autocomplete="current-password" required>
@@ -19,13 +45,6 @@
       <div id="tabs" class="tabs" role="tablist">
         <button id="karaoke-tab" class="tab karaoke-tab" type="button" role="tab" aria-selected="false">노래방</button>
         <button id="add-tab" class="add-tab" type="button" aria-label="新しいメモ" title="新しいメモ">+</button>
-      </div>
-      <div class="menu">
-        <button id="save" class="primary" type="button" title="Ctrl+S" hidden>保存</button>
-        <button id="edit" class="primary" type="button" hidden>編集</button>
-        <button id="delete" class="danger" type="button" hidden>削除</button>
-        <button id="karaoke-save" class="primary" type="button" title="Ctrl+S" hidden>保存</button>
-        <button id="karaoke-edit" class="primary" type="button" hidden>編集</button>
       </div>
     </header>
 
@@ -49,6 +68,13 @@
       <article id="viewer" class="markdown viewer"></article>
     </section>
     <footer class="footer">
+      <div class="note-actions">
+        <button id="save" type="button" title="Ctrl+S" hidden>保存</button>
+        <button id="edit" type="button" hidden>編集</button>
+        <button id="delete" type="button" hidden>削除</button>
+        <button id="karaoke-save" type="button" title="Ctrl+S" hidden>保存</button>
+        <button id="karaoke-edit" type="button" hidden>編集</button>
+      </div>
       <a href="https://github.com/noelfania/mmm" target="_blank" rel="noopener noreferrer">View on GitHub</a>
       <div class="account-menu">
         <button id="open-password" type="button">パスワード変更</button>

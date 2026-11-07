@@ -254,6 +254,7 @@ function signIn(password) {
 function showLogin() {
   tabs = [];
   activeKey = null;
+  $('loading').hidden = true;
   $('app').hidden = true;
   $('login').hidden = false;
   $('login-password').value = '';
@@ -262,15 +263,19 @@ function showLogin() {
 
 async function showApp() {
   $('login').hidden = true;
-  $('app').hidden = false;
+  $('loading').hidden = false;
+  $('app').hidden = true;
   try {
     await loadNotes();
   } catch (error) {
+    $('app').hidden = false;
     $('note').hidden = false;
     $('editor').hidden = true;
     $('viewer').hidden = true;
     setStatus(`メモを読み込めませんでした: ${error.message}`, true);
   }
+  $('loading').hidden = true;
+  $('app').hidden = false;
 }
 
 $('login').addEventListener('submit', async (event) => {
@@ -410,9 +415,16 @@ async function start() {
     if (saved) setSplit(saved, false);
   } catch {}
 
-  const { data } = await db.auth.getSession();
-  if (data.session) await showApp();
-  else showLogin();
+  try {
+    const { data, error } = await db.auth.getSession();
+    if (error) throw error;
+    if (data.session) await showApp();
+    else showLogin();
+  } catch (error) {
+    $('loading').hidden = true;
+    $('login').hidden = false;
+    $('login-error').textContent = `ログイン状態を確認できませんでした: ${error.message}`;
+  }
 }
 
 start();
